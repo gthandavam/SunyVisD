@@ -22,7 +22,7 @@ def rem_stop_words(text):
  
 def rem_punctuation(text):
     punc = re.compile(r'[#-.?!,":;()|/0-9]')  
-    punc.sub('', text) 
+    text = punc.sub('', text) 
     return text 
 
 if __name__ == '__main__':
@@ -35,7 +35,7 @@ if __name__ == '__main__':
         title = bs(etree.tostring(page.find('title'))).text
         print title
         text = bs(etree.tostring(page.find('text'))).text
-        text = rem_stop_words(rem_punctuation(text))
+        text = rem_stop_words(rem_punctuation(text.lower()))
         print text
         print "******************************************"
     
