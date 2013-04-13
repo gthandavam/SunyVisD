@@ -10,7 +10,9 @@ from bs4 import BeautifulSoup as bs
 import re
 from nltk.corpus import stopwords as sw
 from nltk.stem.porter import PorterStemmer
-
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfTransformer
+from scipy.io import mmwrite
 
 def rem_stop_words_and_stem(text):
     #split based on one or more whitespace
@@ -33,24 +35,32 @@ if __name__ == '__main__':
     encoding = 'UTF-8'
     pages = tree.findall('.//page')
 #     word_dict = {}
+    document_ids = []
+    document_content = []
     for page in pages:
-        print page.attrib['id']
+#         print page.attrib['id']
         title = bs(etree.tostring(page.find('title'))).text
-        print title
+#         print title
         text = bs(etree.tostring(page.find('text'))).text
         text = rem_stop_words_and_stem(rem_punctuation(text.lower()))
-        print text
+#         print text
+        document_ids.append(page.attrib['id'])
+        document_content.append(text)
 #         words = text.split()
 #         for word in words:
 #             if( word in word_dict ):
 #                 word_dict[word] += 1
 #             else: 
 #                 word_dict[word] = 1
-        print "******************************************"
+#         print "******************************************"
     
+    vect = CountVectorizer()     
+    x = vect.fit_transform(document_content)     
+    xarr = x.toarray()
     
-#     
-#     for word in word_dict.keys():
-#         print word, " ", word_dict[word]
-#       
-#         
+    transformer = TfidfTransformer()
+    
+    tfidf = transformer.fit_transform(xarr)
+    
+    mmwrite('tf_idf_scipy', tfidf)
+    print document_ids
