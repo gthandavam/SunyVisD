@@ -35,3 +35,6 @@ tf_idf FLOAT
 )
 -- example rows: (8, 19, 1.0), (8, 20, 0.01), (9, 19, 0.75), (42, 20, 0.8)
 
+Librarires Used:
+Beautiful Soup - For removing the HTML entities from the text.
+sklearn 0.10 -> TfidfTransformer, CountVectorizer
