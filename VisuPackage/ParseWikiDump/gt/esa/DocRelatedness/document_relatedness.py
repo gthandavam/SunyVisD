@@ -14,6 +14,11 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
 from scipy.spatial.distance import cosine
 from scipy.io import mmwrite
+import re
+from collections import defaultdict
+import unicodedata
+import StringIO
+
 
 def rem_stop_words_and_stem(text):
     #split based on one or more whitespace
@@ -66,23 +71,31 @@ if __name__ == '__main__':
     #tf idf of input document
         encoding = 'UTF-8'
         pages = tree.findall('.//page')
-#     word_dict = {}
+        #word_dict = {}
         document_ids = []
-        document_content = [] 
-    #tf_idf of wikipedia articles
+        document_content = []
+        #tf_idf of wikipedia articles
+        p=0
         for page in pages:
 #         print page.attrib['id']
             title = bs(etree.tostring(page.find('title'))).text
             #title 
-#         print title
+#         print titlemustaches
             text = bs(etree.tostring(page.find('text'))).text
             text = rem_stop_words_and_stem(rem_punctuation(text.lower()))
 #         print text
             document_ids.append(page.attrib['id'])
+            text=unicodedata.normalize('NFKD', text).encode('ascii','ignore')
+            
             document_content.append(text)
+
+            if ++p>2:break
+#         if words=inputext.split()
+#            if words[word]==page[word]
+#             arr[word]=page[word][something]
 #         words = text.split()
 #         for word in words:
-#             if( word in word_dict ):
+#             if(word in word_dict):
 #                 word_dict[word] += 1
 #             else: 
 #                 word_dict[word] = 1
@@ -94,19 +107,45 @@ if __name__ == '__main__':
         x = vect.fit_transform(document_content)     
         #print x
         y = vect_input.fit_transform(input_document_content)
+       #for word in input_document_content:
+           
         xarr = x.toarray()    
-        yarr = y.toarray()
+        #yarr = y.toarray() 
+        str_decoded=""
+        inv_array=[]
         
-            
+        inverted_tf=dict({})
+        split_content=""
         transformer = TfidfTransformer()
         tfidf = transformer.fit_transform(xarr)
-    
-    #use centroid classifierw
-    #compute cosine similarity between two documents
+        
+         
+        #for the first word
+#        doc_output = StringIO.StringIO() 
+#        doc_output="".join(document_content)
+#        
+        p=0
+        for word_list in document_content:         #number of words
+           document_split = re.sub("[^\w]", " ",  word_list).split()
+          for k in range(len(word_list)):
+            for i in range(tfidf.shape[0]):     #number of concepts
+                    #split_content= re.sub("[^\w]", " ",  document_content[0]).split()  #word array
+                #pr int "Key",tfidf.shape[0] 
+                    inv_array.append(tfidf[i,k])
+                    if word_list[k] not in inverted_tf.iterkeys():
+                        inverted_tf[word_list[k]]=inv_array
+            print "Word ", word_list[k], inverted_tf[word_list[k]]
+            p+=1
+        
+        #print document_content[0], document_content[4661], document_content[4747]
+        #use centroid classifierw
+        #compute cosine similarity between two documents
         distance=0
         #output top-10 concepts
-        #for (int i=0; i<size(xarr,1); ++i)
-        distance=cosine(xarr[0],yarr)
+        
+                  
+        
+        #distance=cosine(xarr[0],yarr)
             
         print "Cosine distance"
         print distance                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
