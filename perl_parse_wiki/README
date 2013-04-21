@@ -1,0 +1,8 @@
+*process.py should generate a file called file_list
+
+* given a file list, invoke the scripts in following order. 
+
+0. create dir inverted_tf. 
+1. run get_idf.pl; this will create a file word_list in the current dir. 
+2. run get_tf.pl; this will create number of files equal to the vocabulary size. 
+3. run get_tf_idf.pl this will create number of files equal to vocabulary size; the file names ending with inverted_index have the file_name and tf_idf combination; this is nothing but the inverted index for a word; use this to create sqls
