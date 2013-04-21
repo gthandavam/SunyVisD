@@ -15,6 +15,9 @@ sub get_file_names() {
 		push @file_names, $line;
 	}
 
+	print "******************** D Value for IDF Calculation *********************\n";
+	print scalar @file_names, "\n";
+	print "**********************************************************************\n";
 	close $FL;
 }
 
@@ -45,9 +48,13 @@ sub get_idf() {
 	}
 	
 	open $FH, ">$output_dir/idf_file";
+	open my $FW, ">word_list";
 	for my $key(keys %$idf_dict) {
 		print $FH $key . "\t" . $idf_dict->{$key} . "\n";
+		print $FW $key."\n";
 	}
+	close $FH;
+	close $FW;
 }
 
 get_file_names();

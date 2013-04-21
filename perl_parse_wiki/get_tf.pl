@@ -34,7 +34,6 @@ sub get_inverted_tf() {
 		close $FH;
 	
 	
-	
 		for my $key ( keys %$tf_dict ) {
 			next if $key =~ m/^\s*$/;
 			open $FH, ">>$output_dir/$key";
