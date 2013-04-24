@@ -17,12 +17,13 @@ articles_xml = 'small_dump.xml'
 # stemmer = PorterStemmer()
 
 
-def process_page(page):
+def process_page(page, file_list):
 	# Get relevant attributes and tag content
 	page_id = page.attrib['id']
 	text = page.find('text').text
 	print page_id +"\n";
 	f = open( "file_"+str(page_id), 'w')
+	file_list.write("file_"+str(page_id)+"\n")
 	text = rswm(text)
 	text = rp(text)
 	text = text.lower()
@@ -36,12 +37,14 @@ def process_dump(xml):
 	print 'Done'
 	# Process all the <page> elements
 	print 'Processing pages...'
+	f = open("file_list", 'w')
 	event, root = parsed.next() # <mediawiki> root
 	for (event, elem) in parsed:
 		if event == 'end' and elem.tag == 'page':
-			process_page(elem)
+			process_page(elem, f)
 		root.clear() # Avoid accumulating empty <page> elements
 	print 'Done'
+	f.close()
 # 	# Count words in each concept
 # 	print 'Counting words...',
 # 	count_vectorizer = CountVectorizer(
