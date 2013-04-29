@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import xml.parsers.expat
+import re
 
 class State(object):
 	
@@ -17,12 +18,21 @@ class State(object):
 
 state = State()
 
+title_filters = [
+	r'^List of .+', # Lists
+	r'.+ \(disambiguation\)$', # disambiguation pages
+	r'^(January|February|March|April|May|June|July|August|September|October|November|December) \d+$', # Months
+	r'^\d+ in .+$', # Years
+	r'^\d+$' # Years and numbers
+]
+title_filter_rx = re.compile('|'.join(title_filters), re.DOTALL | re.IGNORECASE)
+
 def parse_page():
-	if state.page_namespace != u'0':
+	if state.page_namespace != u'0': # Main namespace only
 		return
 	if state.page_redirect:
 		return
-	if state.page_title.endswith(' (disambiguation)'):
+	if title_filter_rx.match(state.page_title):
 		return
 	print state.page_id, '=', state.page_title
 
