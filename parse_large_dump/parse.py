@@ -2,6 +2,7 @@
 
 import xml.parsers.expat
 import re
+import textwrap
 
 class State(object):
 	
@@ -27,14 +28,37 @@ title_filters = [
 ]
 title_filter_rx = re.compile('|'.join(title_filters), re.DOTALL | re.IGNORECASE)
 
+template_rx = re.compile(r'\{\{.+?}}', re.DOTALL)
+math_rx = re.compile(r'<math>.*?</math>', re.DOTALL)
+html_rx = re.compile(r'</?[A-Za-z]+.*?>', re.DOTALL)
+comment_rx = re.compile(r'<!--.*?-->', re.DOTALL)
+link_file_rx = re.compile(r'\[\[File:.+?\]\]', re.DOTALL)
+link_wiki_rx = re.compile(r'\[\[([^\|]+?)\]\]', re.DOTALL)
+link_bar_rx = re.compile(r'\[\[[^\]]+?\|(.+?)\]\]', re.DOTALL)
+link_url_rx = re.compile(r'\[[^\]\s]+ (.+?)\]', re.DOTALL)
+punc_rx = re.compile(r'\W+', re.DOTALL)
+
+def strip_markup(s):
+	s = re.sub(template_rx, ' ', s) # remove templates
+	s = re.sub(math_rx, ' ', s) # remove <math></math>
+	s = re.sub(html_rx, ' ', s) # remove HTML tags
+	s = re.sub(comment_rx, ' ', s) # remove HTML comments
+	s = re.sub(link_file_rx, ' ', s) # remove [[File:includes]
+	s = re.sub(link_wiki_rx, r'\1', s) # unlinkify [[links]]
+	s = re.sub(link_bar_rx, r'\1', s) # unlinkify [[wiki|links]]
+	s = re.sub(link_url_rx, r'\1', s) # unlinkify [http:// links]
+	s = re.sub(punc_rx, ' ', s) # remove punctuation
+	return s
+
 def parse_page():
-	if state.page_namespace != u'0': # Main namespace only
+	if state.page_namespace != 0: # Main namespace only
 		return
 	if state.page_redirect:
 		return
 	if title_filter_rx.match(state.page_title):
 		return
-	print state.page_id, '=', state.page_title
+	state.text = strip_markup(state.text)
+	print "%d\t%s\t%d" % (state.page_id, state.page_title, len(state.text))
 
 def start_element(name, attrs):
 	global state
@@ -53,18 +77,19 @@ def end_element(name):
 	state.cur_elem = None
 	if not state.in_page:
 		return
-	state.text = ''.join(state.text_pieces)
+	state.text = u''.join(state.text_pieces)
 	del state.text_pieces
 	state.text_pieces = []
-	if name == 'page':
+	if name == 'text':
 		state.in_page = False
+		state.text = state.text.encode('ascii', 'replace')
 		parse_page()
 	elif name == 'title':
-		state.page_title = state.text
+		state.page_title = state.text.encode('utf-8', 'replace')
 	elif name == 'ns':
-		state.page_namespace = state.text
+		state.page_namespace = int(state.text)
 	elif name == 'id':
-		state.page_id = state.text
+		state.page_id = int(state.text)
 	elif name == 'redirect':
 		state.page_redirect = True
 	del state.text
@@ -72,12 +97,11 @@ def end_element(name):
 def char_data(data):
 	global state
 	if state.in_page and state.cur_elem in state.elements:
-		text = data.encode('ascii', 'ignore')
-		state.text_pieces.append(text)
+		state.text_pieces.append(data)
 
 parser = xml.parsers.expat.ParserCreate()
 
-parser.buffer_size = 8192
+parser.buffer_size = 16384
 parser.buffer_text = True
 
 parser.StartElementHandler = start_element
