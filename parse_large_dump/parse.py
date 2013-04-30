@@ -49,7 +49,9 @@ def valid_concept():
 		return False
 	if title_filter_rx.match(state.page_title):
 		return False
-	if '{{disambiguation}}' in state.text:
+	if '{{disambiguation}}' in state.text: # Disambiguation templates (complete?)
+		return False
+	if '{{disambiguation|' in state.text:
 		return False
 	if '{{db-' in state.text: # Deletion templates (incomplete)
 		return False
