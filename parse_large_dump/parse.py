@@ -3,6 +3,7 @@
 import xml.parsers.expat
 import re
 from nltk import PorterStemmer # or LancasterStemmer
+from nltk.corpus import stopwords
 
 IN_PATH = 'E:/Desktop/wikiprep/enwiki-2013-04-04-pages-articles.xml'
 OUT_PATH = 'E:/Desktop/wikiprep/articles.txt'
@@ -11,6 +12,9 @@ TEXT_PREVIEW = 500 # use None for full text
 ARTICLE_PREVIEW = 1000 # use None for all articles
 
 BUFFER_SIZE = 16384
+
+MIN_WORDS = 200
+TITLE_WEIGHT = 4
 
 class State(object):
 	
@@ -28,36 +32,6 @@ class State(object):
 
 state = State()
 
-comment_rx = re.compile(r'<!--.*?-->', re.DOTALL)
-template_rx = re.compile(r'\{\{[^\{]+?}}', re.DOTALL)
-math_rx = re.compile(r'<math>.*?</math>', re.DOTALL)
-html_rx = re.compile(r'</?[A-Za-z]+.*?>', re.DOTALL)
-link_include_rx = re.compile(r'\[\[(?:File|Image):[^\[\]]+\|(.+?)\]\]', re.DOTALL)
-link_wiki_rx = re.compile(r'\[\[([^\|]+?)\]\]', re.DOTALL)
-link_bar_rx = re.compile(r'\[\[[^\]]+?\|(.+?)\]\]', re.DOTALL)
-link_url_rx = re.compile(r'\[[^\]\s]+ (.+?)\]', re.DOTALL)
-punc_rx = re.compile(r'[^A-Za-z]+', re.DOTALL)
-
-def strip_markup(s):
-	s = re.sub(comment_rx, ' ', s) # <!--comments-->
-	s = re.sub(template_rx, ' ', s) # {{a {{b {{sub-sub-template}} c}} d}}
-	s = re.sub(template_rx, ' ', s) # {{a {{sub-template}} b}}
-	s = re.sub(template_rx, ' ', s) # {{template}}
-	s = re.sub(math_rx, ' ', s) # <math>...</math>
-	s = re.sub(html_rx, ' ', s) # <html> </tags>
-	s = re.sub(link_include_rx, r'\1', s) # [[File:]] [[Image:]]
-	s = re.sub(link_wiki_rx, r'\1', s) # [[article]]
-	s = re.sub(link_bar_rx, r'\1', s) # [[article|text]]
-	s = re.sub(link_url_rx, r'\1', s) # [http://url text]
-	s = re.sub(punc_rx, ' ', s) # punctuation
-	s = s.lower()
-	return s
-
-stemmer = PorterStemmer()
-
-def stem(s):
-	return [stemmer.stem(w) for w in s.split()]
-
 title_filters = [
 	r'^List of .+', # Lists
 	r'.+ \(disambiguation\)$', # disambiguation pages
@@ -67,31 +41,71 @@ title_filters = [
 ]
 title_filter_rx = re.compile('|'.join(title_filters), re.DOTALL | re.IGNORECASE)
 
-def parse_page():
+def valid_concept():
 	global state
 	if state.page_namespace != 0: # Main namespace only
-		return
+		return False
 	if state.page_redirect:
-		return
+		return False
 	if title_filter_rx.match(state.page_title):
-		return
+		return False
 	if '{{disambiguation}}' in state.text:
-		return
+		return False
 	if '{{db-' in state.text: # Deletion templates (incomplete)
-		return
+		return False
 	if '{{di-' in state.text:
-		return
+		return False
 	if '{{dv-' in state.text:
-		return
+		return False
 	if '{{nn-' in state.text:
-		return
+		return False
 	if '{{Proposed deletion endorsed}}' in state.text:
+		return False
+	return True
+
+comment_rx = re.compile(r'<!--.*?-->', re.DOTALL)
+template_rx = re.compile(r'\{\{[^\{]+?}}', re.DOTALL)
+math_rx = re.compile(r'<math>.*?</math>', re.DOTALL)
+html_rx = re.compile(r'</?[A-Za-z]+.*?>', re.DOTALL)
+link_include_rx = re.compile(r'\[\[(?:File|Image):[^\[\]]+\|(.+?)\]\]', re.DOTALL)
+link_wiki_rx = re.compile(r'\[\[([^\|]+?)\]\]', re.DOTALL)
+link_bar_rx = re.compile(r'\[\[[^\]]+?\|(.+?)\]\]', re.DOTALL)
+link_url_rx = re.compile(r'\[[^\]\s]+ (.+?)\]', re.DOTALL)
+punc_rx = re.compile(r'[^A-Za-z0-9]+', re.DOTALL)
+
+stemmer = PorterStemmer()
+stem = lambda w: stemmer.stem(stemmer.stem(stemmer.stem(w))) # stem three times
+stop_words = stopwords.words('english')
+
+def extract_words(text):
+	text = re.sub(comment_rx, ' ', text) # <!--comments-->
+	text = re.sub(template_rx, ' ', text) # {{a {{b {{sub-sub-template}} c}} d}}
+	text = re.sub(template_rx, ' ', text) # {{a {{sub-template}} b}}
+	text = re.sub(template_rx, ' ', text) # {{template}}
+	text = re.sub(math_rx, ' ', text) # <math>...</math>
+	text = re.sub(html_rx, ' ', text) # <html> </tags>
+	text = re.sub(link_include_rx, r'\1', text) # [[File:]] [[Image:]]
+	text = re.sub(link_wiki_rx, r'\1', text) # [[article]]
+	text = re.sub(link_bar_rx, r'\1', text) # [[article|text]]
+	text = re.sub(link_url_rx, r'\1', text) # [http://url text]
+	text = re.sub(punc_rx, ' ', text) # punctuation
+	text = text.lower()
+	words = [stem(w) for w in text.split()]
+	words = [w for w in words if w not in stop_words] # remove stop words
+	return words
+
+def parse_page():
+	global state
+	if not valid_concept():
 		return
-	state.text = strip_markup(state.text)
-	state.text = stem(state.text)
-	text = ' '.join(state.text)
+	state.text = ((state.page_title + ' ')
+		* TITLE_WEIGHT + state.text)
+	words = extract_words(state.text)
+	if len(words) < MIN_WORDS:
+		return
+	state.text = ' '.join(words)
 	outfile.write("%d\t%s\t%d\t%d\t%s\n" % (state.page_id, state.page_title,
-		len(state.text), len(text), text[:TEXT_PREVIEW]))
+		len(words), len(state.text), state.text[:TEXT_PREVIEW]))
 	state.num_pages += 1
 
 def start_element(name, attrs):
