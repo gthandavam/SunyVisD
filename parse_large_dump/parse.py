@@ -75,6 +75,18 @@ def parse_page():
 		return
 	if title_filter_rx.match(state.page_title):
 		return
+	if '{{disambiguation}}' in state.text:
+		return
+	if '{{db-' in state.text: # Deletion templates (incomplete)
+		return
+	if '{{di-' in state.text:
+		return
+	if '{{dv-' in state.text:
+		return
+	if '{{nn-' in state.text:
+		return
+	if '{{Proposed deletion endorsed}}' in state.text:
+		return
 	state.text = strip_markup(state.text)
 	state.text = stem(state.text)
 	text = ' '.join(state.text)
