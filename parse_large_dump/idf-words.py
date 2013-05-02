@@ -2,18 +2,16 @@
 
 import math
 
-IN_PATH = 'stemmed-articles.txt'
-OUT_PATH = 'words-idf.txt'
+IN_PATH = 'E:/Desktop/wikiprep/stemmed-articles.txt'
+OUT_PATH = 'E:/Desktop/wikiprep/words-idf.txt'
 
 total_count = {}
 doc_count = {}
-num_docs = 0
 
 infile = open(IN_PATH, 'r')
 outfile = open(OUT_PATH, 'w', 1)
 
 for line in infile.xreadlines():
-	num_docs += 1
 	id, title, nwords, nchars, text = line.split("\t")
 	if id == "id": # header
 		continue
@@ -28,6 +26,7 @@ for line in infile.xreadlines():
 			doc_count[word] += 1
 			seen_words.add(word)
 
+num_docs = 1857524 # from stemmed-articles.txt
 log_num_docs = math.log(num_docs)
 
 outfile.write("word\tidf\tnum docs with word\ttotal uses of word\n")

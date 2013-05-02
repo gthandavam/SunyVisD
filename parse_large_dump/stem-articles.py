@@ -2,11 +2,11 @@
 
 import xml.parsers.expat
 import re
-from nltk import PorterStemmer
+from nltk import PorterStemmer # or LancasterStemmer
 from nltk.corpus import stopwords
 
-IN_PATH = 'enwiki-latest-pages-articles.xml'
-OUT_PATH = 'stemmed-articles.txt'
+IN_PATH = 'E:/Desktop/wikiprep/enwiki-2013-04-04-pages-articles.xml'
+OUT_PATH = 'E:/Desktop/wikiprep/stemmed-articles.txt'
 
 BUFFER_SIZE = 16384
 
@@ -156,7 +156,7 @@ parser.EndElementHandler = end_element
 parser.CharacterDataHandler = char_data
 
 infile = open(IN_PATH, 'r')
-outfile = open(OUT_PATH, 'w')
+outfile = open(OUT_PATH, 'w', 1) # line-buffered
 
 outfile.write("id\ttitle\twords\tchars\ttext\n")
 parser.ParseFile(infile)
