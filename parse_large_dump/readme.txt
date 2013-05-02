@@ -1,14 +1,18 @@
-This script is used to parse the 41GB Wikipedia dump from April 2013.
-WikiPrep has not been run on the dump, so it has to remove HTML/Wiki markup
-and figure out categories itself.
+enwiki-latest-pages-articles.xml:
+40.4 GB
+13,675,673 pages
+Downloaded April 4, 2013 from http://en.wikipedia.org/wiki/Wikipedia:Database_download#English-language_Wikipedia
 
-It uses the streaming expat parser to read enwiki-latest-pages-articles.xml.
-So far it identifies articles that fit the following criteria:
- * Not a redirect
- * Not a disambiguation page
-We'll also need to check later that the articles meet a minimum length, and
-that they aren't in certain stop categories.
+stem-articles.py:
+Parses the Wikipedia database dump. Rejects articles that are redirects,
+proposed for deletion, or are too short. Stems the words in the remaining
+articles.
 
-After verifying that an article is good and should be counted as a concept,
-the script will extract its text, stem it, and create the tf-idf inverted
-index.
+stemmed-articles.txt:
+7.52 GB
+1,857,524 articles
+
+idf-words.py:
+Calculates the IDF score for each word in the stemmed articles.
+
+TODO: calculate TF, and TF-IDF, scores.
