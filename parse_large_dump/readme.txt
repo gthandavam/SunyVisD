@@ -15,4 +15,8 @@ stemmed-articles.txt:
 idf-words.py:
 Calculates the IDF score for each word in the stemmed articles.
 
+words-idf.txt:
+147 MB
+4,612,483 words
+
 TODO: calculate TF, and TF-IDF, scores.
