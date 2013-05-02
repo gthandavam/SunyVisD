@@ -2,14 +2,11 @@
 
 import xml.parsers.expat
 import re
-from nltk import PorterStemmer # or LancasterStemmer
+from nltk import PorterStemmer
 from nltk.corpus import stopwords
 
-IN_PATH = 'E:/Desktop/wikiprep/enwiki-2013-04-04-pages-articles.xml'
-OUT_PATH = 'E:/Desktop/wikiprep/articles.txt'
-
-TEXT_PREVIEW = 500 # use None for full text
-ARTICLE_PREVIEW = 1000 # use None for all articles
+IN_PATH = 'enwiki-latest-pages-articles.xml'
+OUT_PATH = 'stemmed-articles.txt'
 
 BUFFER_SIZE = 16384
 
@@ -107,7 +104,7 @@ def parse_page():
 		return
 	state.text = ' '.join(words)
 	outfile.write("%d\t%s\t%d\t%d\t%s\n" % (state.page_id, state.page_title,
-		len(words), len(state.text), state.text[:TEXT_PREVIEW]))
+		len(words), len(state.text), state.text))
 	state.num_pages += 1
 
 def start_element(name, attrs):
@@ -134,9 +131,6 @@ def end_element(name):
 		state.in_page = False
 		state.text = state.text.encode('ascii', 'replace')
 		parse_page()
-		if ARTICLE_PREVIEW and state.num_pages > ARTICLE_PREVIEW:
-			raise Exception('article limit reached: %d' %
-				(ARTICLE_PREVIEW,))
 	elif name == 'title':
 		state.page_title = state.text.encode('utf-8', 'replace')
 	elif name == 'ns':
