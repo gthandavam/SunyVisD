@@ -18,14 +18,13 @@ class State(object):
 	def __init__(self):
 		self.cur_elem = None
 		self.in_page = False
-		self.page_id = None
 		self.page_title = None
 		self.page_namespace = None
 		self.page_redirect = False
 		self.text_pieces = []
 		self.text = None
 		self.num_pages = 0
-		self.elements = ('text', 'title', 'ns', 'id')
+		self.elements = ('text', 'title', 'ns')
 
 state = State()
 
@@ -103,8 +102,7 @@ def parse_page():
 	if len(words) < MIN_WORDS:
 		return
 	state.text = ' '.join(words)
-	outfile.write("%d\t%s\t%d\t%d\t%s\n" % (state.page_id, state.page_title,
-		len(words), len(state.text), state.text))
+	outfile.write("%s\t%s\n" % (state.page_title, state.text))
 	state.num_pages += 1
 
 def start_element(name, attrs):
@@ -112,7 +110,6 @@ def start_element(name, attrs):
 	state.cur_elem = name
 	if name == 'page':
 		state.in_page = True
-		state.page_id = None
 		state.page_title = None
 		state.page_namespace = None
 		state.page_redirect = False
@@ -135,8 +132,6 @@ def end_element(name):
 		state.page_title = state.text.encode('utf-8', 'replace')
 	elif name == 'ns':
 		state.page_namespace = int(state.text)
-	elif name == 'id':
-		state.page_id = int(state.text)
 	elif name == 'redirect':
 		state.page_redirect = True
 	del state.text
@@ -158,7 +153,7 @@ parser.CharacterDataHandler = char_data
 infile = open(IN_PATH, 'r')
 outfile = open(OUT_PATH, 'w', 1) # line-buffered
 
-outfile.write("id\ttitle\twords\tchars\ttext\n")
+outfile.write("title\ttext\n")
 parser.ParseFile(infile)
 
 infile.close()

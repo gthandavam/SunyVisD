@@ -12,8 +12,8 @@ infile = open(IN_PATH, 'r')
 outfile = open(OUT_PATH, 'w', 1)
 
 for line in infile.xreadlines():
-	id, title, nwords, nchars, text = line.split("\t")
-	if id == "id": # header
+	title, text = line.split("\t")
+	if title == "title" and text == "text": # skip header
 		continue
 	words = text.split()
 	seen_words = set()
