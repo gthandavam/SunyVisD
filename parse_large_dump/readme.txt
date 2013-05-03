@@ -23,5 +23,5 @@ tf-words.py:
 Calculates the TF and TF-IDF scores for the (article/concept, word) pairs.
 
 words-tf.txt:
-*** In Progress ***
-*** ETA 5.5 hours ***
+29.7 GB
+583,983,030 concept-word pairs
