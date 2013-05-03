@@ -11,13 +11,12 @@ doc_count = {}
 infile = open(IN_PATH, 'r')
 outfile = open(OUT_PATH, 'w', 1)
 
-for line in infile.xreadlines():
+lines_gen = infile.xreadlines()
+header = lines_gen.next()
+for line in lines_gen:
 	title, text = line.split("\t")
-	if title == "title" and text == "text": # skip header
-		continue
-	words = text.split()
 	seen_words = set()
-	for word in words:
+	for word in text.split():
 		if word not in total_count:
 			total_count[word] = 0
 			doc_count[word] = 0
@@ -25,14 +24,16 @@ for line in infile.xreadlines():
 		if word not in seen_words:
 			doc_count[word] += 1
 			seen_words.add(word)
+	del seen_words
 
 num_docs = 1857524 # from stemmed-articles.txt
 log_num_docs = math.log(num_docs)
 
 outfile.write("word\tidf\tnum docs with word\ttotal uses of word\n")
-for (word, dc) in reversed(sorted(doc_count.items(), key=lambda x: x[1])):
-	idf = log_num_docs - math.log(dc)
-	outfile.write("%s\t%s\t%d\t%d\n" % (word, repr(idf), dc, total_count[word]))
+for word in doc_count:
+	count = doc_count[word]
+	idf = log_num_docs - math.log(count)
+	outfile.write("%s\t%s\t%d\t%d\n" % (word, repr(idf), count, total_count[word]))
 
 infile.close()
 outfile.close()

@@ -11,11 +11,11 @@ word_ids = {}
 
 infile = open(IN_PATH_IDF, 'r')
 
+lines_gen = infile.xreadlines()
+header = lines_gen.next()
 word_id = 0
-for line in infile.xreadlines():
+for line in lines_gen:
 	word, idf, _ = line.split("\t", 2)
-	if word == "word" and idf == "idf": # skip header
-		continue
 	word_idfs[word] = float(idf)
 	word_ids[word] = word_id
 	word_id += 1
@@ -26,23 +26,23 @@ infile = open(IN_PATH_ARTICLES, 'r')
 outfile = open(OUT_PATH, 'w', 1)
 
 outfile.write("concept id\tword id\tcount\ttf\ttf-idf\n")
+lines_gen = infile.xreadlines()
+header = lines_gen.next()
 concept_id = 0
-for line in infile.xreadlines():
+for line in lines_gen:
 	title, text = line.split("\t")
-	if title == "title" and text == "text": # skip header
-		continue
 	counts = {}
-	words = text.split()
-	del text
-	for word in words:
+	for word in text.split():
 		if word not in counts:
 			counts[word] = 0
 		counts[word] += 1
-	del words
 	max_count = max(counts.values())
 	for word in counts:
-		word_id = word_ids[word]
-		count = counts[word]
+		word_id = word_ids.get(word, -1)
+		count = counts.get(word, 0)
+		if word_id == -1:
+			print "*** Word without ID: %s ***" % (word,)
+			print "*** Count in doc #%d: %d ***" % (concept_id, count)
 		tf = math.log1p(count)
 		idf = word_idfs[word]
 		tf_idf = tf * idf
