@@ -19,4 +19,9 @@ words-idf.txt:
 147 MB
 4,612,483 words
 
-TODO: calculate TF, and TF-IDF, scores.
+tf-words.py:
+Calculates the TF and TF-IDF scores for the (article/concept, word) pairs.
+
+words-tf.txt:
+*** In Progress ***
+*** ETA 5.5 hours ***
