@@ -25,3 +25,9 @@ Calculates the TF and TF-IDF scores for the (article/concept, word) pairs.
 words-tf.txt:
 29.7 GB
 583,983,030 concept-word pairs
+
+tfidf-db.py:
+Creates a SQLite database with tables `concepts', `words', and `inverted_index'.
+
+tfidf.db:
+*** IN PROGRESS ***
