@@ -61,8 +61,8 @@ cur.executemany('''INSERT INTO words VALUES (?, ?)''',
 print "Generating inverted index..."
 
 cur.execute('''CREATE TABLE inverted_index (
-	word_id INTEGER NOT NULL UNIQUE,
-	concept_id INTEGER NOT NULL UNIQUE,
+	word_id INTEGER NOT NULL,
+	concept_id INTEGER NOT NULL,
 	tfidf FLOAT NOT NULL,
 	FOREIGN KEY(word_id) REFERENCES words(id),
 	FOREIGN KEY(concept_id) REFERENCES concepts(id)
