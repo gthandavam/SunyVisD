@@ -50,8 +50,8 @@ def gen_words():
 	for line in lines_gen:
 		word, _ = line.split("\t", 1)
 		yield (word_id, word)
-		if not word_id % 46124:
-			print word_id, '/', 4612483
+		if not word_id % 63438:
+			print word_id, '/', 6343823
 		word_id += 1
 	infile.close()
 
@@ -65,7 +65,7 @@ cur.execute('''CREATE TABLE inverted_index (
 	concept_id INTEGER NOT NULL UNIQUE,
 	tfidf FLOAT NOT NULL,
 	FOREIGN KEY(word_id) REFERENCES words(id),
-	FOREIGN KEY(concept_id) REFERENCES concepts(id),
+	FOREIGN KEY(concept_id) REFERENCES concepts(id)
 )''')
 
 def gen_tfidf():
