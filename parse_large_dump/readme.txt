@@ -30,4 +30,22 @@ tfidf-db.py:
 Creates a SQLite database with tables `concepts', `words', and `inverted_index'.
 
 tfidf.db:
-*** IN PROGRESS ***
+288 MB
+
+TABLE concepts ( -- 1,857,524 rows
+	id INTEGER NOT NULL PRIMARY KEY,
+	concept TEXT NOT NULL
+)
+
+TABLE words ( -- 6,343,823 rows
+	id INTEGER NOT NULL PRIMARY KEY,
+	word TEXT NOT NULL UNIQUE
+)
+
+TABLE inverted_index ( -- 583,983,030 rows
+	word_id INTEGER NOT NULL,
+	concept_id INTEGER NOT NULL,
+	tfidf FLOAT NOT NULL,
+	FOREIGN KEY(word_id) REFERENCES words(id),
+	FOREIGN KEY(concept_id) REFERENCES concepts(id)
+)
