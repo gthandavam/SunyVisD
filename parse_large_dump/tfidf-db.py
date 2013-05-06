@@ -3,11 +3,13 @@
 import sqlite3
 import random
 
-DB_PATH = 'E:/Desktop/wikiprep/tfidf-80.db'
+DB_PATH = 'E:/Desktop/wikiprep/tfidf-d80-t1.75.db'
 CONCEPTS_PATH = 'E:/Desktop/wikiprep/stemmed-articles.txt'
 WORDS_PATH = 'E:/Desktop/wikiprep/words-idf.txt'
 TFIDF_PATH = 'E:/Desktop/wikiprep/words-tf.txt'
 DICT_PATH = 'E:/Desktop/wikiprep/scowl-80-stemmed.txt'
+
+TFIDF_THRESHOLD = 1.75
 
 NUM_ENTRIES = 583983030
 
@@ -84,15 +86,16 @@ cur.execute('''CREATE TABLE inverted_index (
 )''')
 
 def gen_500k_tfidf():
-	global entry, words
+	global entry, entry_filtered, words
 	for _ in xrange(500000):
 		line = lines_gen.next()
 		concept_id, word_id, count, tf, tfidf = line.split("\t", 4)
 		concept_id = int(concept_id)
 		word_id = int(word_id)
 		tfidf = float(tfidf)
-		if words[word_id] in dictionary:
-			yield (int(word_id), int(concept_id), float(tfidf))
+		if words[word_id] in dictionary and tfidf > TFIDF_THRESHOLD:
+			yield (word_id, concept_id, tfidf)
+			entry_filtered += 1
 		entry += 1
 		if entry >= NUM_ENTRIES:
 			break
@@ -101,11 +104,11 @@ infile = open(TFIDF_PATH, 'r')
 lines_gen = infile.xreadlines()
 header = lines_gen.next()
 entry = 0
+entry_filtered = 0
 while entry < NUM_ENTRIES:
 	cur.executemany('''INSERT INTO inverted_index VALUES (?, ?, ?)''',
 		gen_500k_tfidf())
-	count = cur.execute('SELECT COUNT(*) FROM inverted_index').fetchone()[0]
-	print count, '/', NUM_ENTRIES
+	print entry_filtered, '/', entry, ('(%.2f%%)' % (entry * 100.0 / NUM_ENTRIES,))
 infile.close()
 
 conn.commit()

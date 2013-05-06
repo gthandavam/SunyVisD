@@ -73,7 +73,7 @@ punc_rx = re.compile(r'[^A-Za-z0-9]+', re.DOTALL)
 
 stemmer = PorterStemmer()
 stem = lambda w: stemmer.stem(stemmer.stem(stemmer.stem(w))) # stem three times
-stop_words = stopwords.words('english')
+stop_words = map(stem, stopwords.words('english'))
 
 def extract_words(text):
 	text = re.sub(comment_rx, ' ', text) # <!--comments-->
