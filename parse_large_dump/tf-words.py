@@ -40,7 +40,7 @@ for line in lines_gen:
 	for word in counts:
 		word_id = word_ids.get(word, -1)
 		count = counts.get(word, 0)
-		if word_id == -1:
+		if word_id == -1: # debug
 			print "*** Word without ID: %s ***" % (word,)
 			print "*** Count in doc #%d: %d ***" % (concept_id, count)
 		tf = math.log1p(count)
