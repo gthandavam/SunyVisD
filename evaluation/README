@@ -1,0 +1,18 @@
+
+parse_and_prepare module takes care of reading the input file and writing the output file
+The file is read once and a graph is built for one sentence at a time.
+
+Credits for the terse pagerank implementation:
+https://gist.github.com/diogojc/1338222
+
+
+for running evaluation paths to database file should be tuned in document_relatedness.py.
+Also, output file should be specified in parse_and_prepare.py (by default - pagerank-output)
+
+For running:
+
+sudo ./parse_and_prepare.py
+
+
+The number of entries in database is really small, and there is a very small number of overlapping concepts between randomly picked words.
+
