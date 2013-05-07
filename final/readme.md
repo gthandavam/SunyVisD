@@ -1,6 +1,6 @@
 Workflow:
 
-1. Download `[enwiki-latest-pages-articles.xml](http://en.wikipedia.org/wiki/Wikipedia:Database_download#English-language_Wikipedia)`
+1. Download [`enwiki-latest-pages-articles.xml`](http://en.wikipedia.org/wiki/Wikipedia:Database_download#English-language_Wikipedia)
    (40.4 GB, 13,675,673 pages), an XML dump of Wikipedia's database from April 4, 2013.
 
 2. Run `stem-articles.py` to: parse the Wikipedia dump; reject articles that
