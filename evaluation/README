@@ -1,0 +1,6 @@
+
+parse_and_prepare module takes care of reading the input file and writing the output file
+The file is read once and a graph is built for one sentence at a time.
+
+Credits for the terse pagerank implementation:
+https://gist.github.com/diogojc/1338222
