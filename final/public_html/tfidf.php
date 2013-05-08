@@ -1,13 +1,18 @@
 <?php
 
+$stemmer = new PorterStemmer();
+
 $db_path = '/home/remy/Desktop/tfidf-d80-t2.5-indexed.db';
 $db = new SQLite3($db_path, SQLITE3_OPEN_READONLY);
 
+function stem3($word) {
+	global $stemmer;
+	return $stemmer->stem($stemmer->stem($stemmer->stem($word)));
+}
+
 function top10concepts($text) {
-	$stemmer = new PorterStemmer();
-	$words = array_map(function ($w) {
-		return $stemmer->stem($stemmer->stem($stemmer->stem($w)));
-	}, preg_split('/\s+/', $text));
+	global $db;
+	$words = array_filter(array_map('stem3', preg_split('/\s+/', $text)));
 	$concept_ids = array();
 	$concepts = array();
 	$sql = 'SELECT concept, SUM(tfidf) AS tfidfs FROM inverted_index AS ii JOIN concepts AS cs ON ii.concept_id = cs.id WHERE word_id IN (SELECT id FROM words WHERE word IN(';

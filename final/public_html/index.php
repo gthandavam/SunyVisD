@@ -11,10 +11,10 @@ $error = NULL;
 $top10 = NULL;
 $similarity = NULL;
 
-if ($_POST['action'] == 'Submit') {
+if (array_key_exists('action', $_POST) && $_POST['action'] == 'Submit') {
 	$text1 = trim(preg_replace('/[^A-Za-z0-9 ]/', '', $_POST['text1']));
 	$text2 = trim(preg_replace('/[^A-Za-z0-9 ]/', '', $_POST['text2']));
-	if (empty($text1) {
+	if (empty($text1)) {
 		$error = 'Please enter a word or phrase!';
 	}
 	elseif (empty($text2)) {
@@ -55,7 +55,7 @@ if ($_POST['action'] == 'Submit') {
 <ol>
 <?php foreach ($top10 as $pair): ?>
 <?php list($concept, $tfidf) = $pair; ?>
-<li class="success"><?=htmlentities($concept) ?> <em>(TF-IDF score = <?=$tfidf ?>)</em></li>
+<li class="success"><strong><?=htmlentities($concept) ?></strong> <em>(TF-IDF score = <?=$tfidf ?>)</em></li>
 <?php endforeach; ?>
 </ol>
 <?php elseif (!is_null($similarity)): ?>

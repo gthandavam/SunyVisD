@@ -49,6 +49,10 @@ h1, h2, h3, h4, h5, h6 {
 	margin: 1em 0;
 }
 
+#content ul, #content ol {
+	padding-left: 2em;
+}
+
 #content input {
 	font: 20px/1.25 Georgia, "Times New Roman", Times, serif;
 	padding: 4px;

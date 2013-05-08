@@ -19,9 +19,9 @@ class PorterStemmer {
 		'exceed' => array('exceed'),
 		'succeed' => array('succeed'),
 	);
-	
+
 	function __construct() {}
-	
+
 	function cons($i) {
 		if (in_array($this->b[$i], array('a', 'e', 'i', 'o', 'u'))) {
 			return FALSE;
@@ -32,7 +32,7 @@ class PorterStemmer {
 		}
 		return TRUE;
 	}
-	
+
 	function m() {
 		$n = 0;
 		$i = $this->k0;
@@ -58,7 +58,7 @@ class PorterStemmer {
 			$i++;
 		}
 	}
-	
+
 	function vowelinstem() {
 		for ($i = $this->k0; $i <= $this->j; $i++) {
 			if (!$this->cons($i)) {
@@ -67,7 +67,7 @@ class PorterStemmer {
 		}
 		return FALSE;
 	}
-	
+
 	function doublec($j) {
 		if ($j < $this->k0 + 1) {
 			return FALSE;
@@ -77,19 +77,19 @@ class PorterStemmer {
 		}
 		return $this->cons($j);
 	}
-	
+
 	function cvc($i) {
 		if ($i == 0) { return FALSE; }
 		if ($i == 1) {
 			return !$this->cons(0) && $this->cons(1);
 		}
-		if (!$this->cons($i) || $this->cons($i - 1) || !$this->cons($i - 2) {
+		if (!$this->cons($i) || $this->cons($i - 1) || !$this->cons($i - 2)) {
 			return FALSE;
 		}
 		$ch = $this->b[$i];
 		return $ch != 'w' && $ch != 'x' && $ch != 'y';
 	}
-	
+
 	function ends($s) {
 		$length = strlen($s);
 		if ($s[$length - 1] != $this->b[$this->k]) {
@@ -103,26 +103,26 @@ class PorterStemmer {
 		$this->j = $this->k - $length;
 		return TRUE;
 	}
-	
+
 	function setto($s) {
 		$length = strlen($s);
 		$this->b = substr($this->b, 0, $this->j + 1) . $s . substr($this->b,
 			$this->j + $length + 1, strlen($this->b) - 1 - $this->j - $length - 1);
 		$this->k = $this->j + $length;
 	}
-	
+
 	function r($s) {
 		if ($this->m() > 0) {
 			$this->setto($s);
 		}
 	}
-	
+
 	function step1ab() {
 		if ($this->b[$this->k] == 's') {
-			if ($this->ends('sses') {
+			if ($this->ends('sses')) {
 				$this->k -= 2;
 			}
-			elseif ($this->ends('ies') {
+			elseif ($this->ends('ies')) {
 				if ($this->j == 0) {
 					$this->k--;
 				}
@@ -134,7 +134,7 @@ class PorterStemmer {
 				$this->k--;
 			}
 		}
-		if ($this->ends('ied') {
+		if ($this->ends('ied')) {
 			if ($this->j == 0) {
 				$this->k--;
 			}
@@ -142,16 +142,16 @@ class PorterStemmer {
 				$this->k -= 2;
 			}
 		}
-		elseif ($this->ends('eed') {
+		elseif ($this->ends('eed')) {
 			if ($this->m() > 0) {
 				$this->k--;
 			}
 		}
 		elseif (($this->ends('ed') || $this->ends('ing')) && $this->vowelinstem()) {
 			$this->k = $this->j;
-			if ($this->ends('at') { $this->setto('ate'); }
-			elseif ($this->ends('bl') { $this->setto('ble'); }
-			elseif ($this->ends('iz') { $this->setto('ize'); }
+			if ($this->ends('at')) { $this->setto('ate'); }
+			elseif ($this->ends('bl')) { $this->setto('ble'); }
+			elseif ($this->ends('iz')) { $this->setto('ize'); }
 			elseif ($this->doublec($this->k)) {
 				$this->k--;
 				$ch = $this->b[$this->k];
@@ -159,19 +159,19 @@ class PorterStemmer {
 					$this->k++;
 				}
 			}
-			elseif (($this->m() == 1 && $this->cvc($this->k)) {
+			elseif ($this->m() == 1 && $this->cvc($this->k)) {
 				$this->setto('e');
 			}
 		}
 	}
-	
+
 	function step1c() {
 		if ($this->ends('y') && $this->j > 0 && $this->cons($this->k - 1)) {
 			$this->b = substr($this->b, 0, $this->k) . 'i' . substr($this->b,
 				$this->k + 1, strlen($this->b) - $this->k - 1);
 		}
 	}
-	
+
 	function step2() {
 		if ($this->b[$this->k - 1] == 'a') {
 			if ($this->ends('ational')) { $this->r('ate'); }
@@ -220,12 +220,12 @@ class PorterStemmer {
 			}
 		}
 	}
-	
+
 	function step3() {
 		if ($this->b[$this->k] == 'e') {
 			if ($this->ends('icate')) { $this->r('ic'); }
-			elseif ($this->ends('ative') { $this->r(''); }
-			elseif ($this->ends('alize') { $this->r('al'); }
+			elseif ($this->ends('ative')) { $this->r(''); }
+			elseif ($this->ends('alize')) { $this->r('al'); }
 		}
 		elseif ($this->b[$this->k] == 'i') {
 			if ($this->ends('iciti')) { $this->r('ic'); }
@@ -238,7 +238,7 @@ class PorterStemmer {
 			if ($this->ends('ness')) { $this->r(''); }
 		}
 	}
-	
+
 	function step4() {
 		if ($this->b[$this->k - 1] == 'a') {
 			if ($this->ends('al')) {}
@@ -300,7 +300,7 @@ class PorterStemmer {
 			$this->k = $this->j;
 		}
 	}
-	
+
 	function step5() {
 		$this->j = $this->k;
 		if ($this->b[$this->k] == 'e') {
@@ -313,9 +313,9 @@ class PorterStemmer {
 			$this->k--;
 		}
 	}
-	
+
 	function stem_word($p, $i = 0, $j = NULL) {
-		if (is_null($J)) {
+		if (is_null($j)) {
 			$j = strlen($p) - 1;
 		}
 		$this->b = $p;
@@ -336,7 +336,7 @@ class PorterStemmer {
 		$this->step5();
 		return substr($this->b, $this->k0, $this->k + 1 - $this->k0);
 	}
-	
+
 	function adjust_case($word, $stem) {
 		$lower = strtolower($word);
 		$ret = '';
@@ -351,7 +351,7 @@ class PorterStemmer {
 		}
 		return $ret;
 	}
-	
+
 	function stem($word) {
 		$stem = $this->stem_word(strtolower($word), 0, strlen($word) - 1);
 		return $this->adjust_case($word, $stem);
