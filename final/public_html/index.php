@@ -1,13 +1,25 @@
 <?php
 
 require_once 'porter.php';
+require_once 'tfidf.php';
 
-// use SQLITE3_OPEN_READONLY
-// http://www.php.net/manual/en/sqlite3.open.php
+$error = NULL;
+$top10 = NULL;
+$similarity = NULL;
 
-// 'SELECT concept, SUM(tfidf) AS tfidfs FROM inverted_index AS ii JOIN concepts AS cs ON ii.concept_id = cs.id WHERE word_id IN (SELECT id FROM words WHERE word IN(' .
-// implode(', ', array_map(function ($w) { return "'" . SQLite3::escapeString($w) . "'"; }, $words)) .
-// ')) GROUP BY concept_id ORDER BY tfidfs DESC LIMIT 10'
+if ($_POST['action'] == 'Submit') {
+	$text1 = trim(preg_replace('/[^A-Za-z0-9 ]/', '', $_POST['text1']));
+	$text2 = trim(preg_replace('/[^A-Za-z0-9 ]/', '', $_POST['text2']));
+	if (empty($text1) {
+		$error = 'Please enter a word or phrase!';
+	}
+	elseif (empty($text2)) {
+		$top10 = top10concepts($text1);
+	}
+	else {
+		$similarity = relatedness($text1, $text2);
+	}
+}
 
 ?>
 
@@ -32,6 +44,19 @@ require_once 'porter.php';
 
 <div id="content">
 <div class="central">
+<?php if (!is_null($error)): ?>
+<p class="error"><?=htmlentities($error) ?></p>
+<?php elseif (!is_null($top10)): ?>
+<p class="success">The top 10 closest related concepts to <strong>&ldquo;<?=htmlentities($text1) ?>&rdquo;</strong> are:</p>
+<ol>
+<?php foreach ($top10 as $pair): ?>
+<?php list($concept, $tfidf) = $pair; ?>
+<li class="success"><?=htmlentities($concept) ?> <em>(TF-IDF score = <?=$tfidf ?>)</em></li>
+<?php endforeach; ?>
+</ol>
+<?php elseif (!is_null($similarity)): ?>
+<p class="success">The semantic relatedness of <strong>&ldquo;<?=htmlentities($text1) ?>&rdquo;</strong> and <strong>&ldquo;<?=htmlentities($text2) ?>&rdquo;</strong> is <strong><?=$similarity ?></strong>.</p>
+<?php endif; ?>
 <form id="tfidf" action="<?=htmlentities($_SERVER['PHP_SELF']) ?>" method="post">
 <p>Enter a single word or phrase to find its closest 10 Wikipedia concepts.</p>
 <p><input id="text1" name="text1" type="text" size="40"></p>
