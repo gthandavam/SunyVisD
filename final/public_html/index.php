@@ -2,6 +2,13 @@
 
 require_once 'porter.php';
 
+// use SQLITE3_OPEN_READONLY
+// http://www.php.net/manual/en/sqlite3.open.php
+
+// 'SELECT concept, SUM(tfidf) AS tfidfs FROM inverted_index AS ii JOIN concepts AS cs ON ii.concept_id = cs.id WHERE word_id IN (SELECT id FROM words WHERE word IN(' .
+// implode(', ', array_map(function ($w) { return "'" . SQLite3::escapeString($w) . "'"; }, $words)) .
+// ')) GROUP BY concept_id ORDER BY tfidfs DESC LIMIT 10'
+
 ?>
 
 <!DOCTYPE html>
