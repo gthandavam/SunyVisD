@@ -1,5 +1,9 @@
 <?php
 
+error_reporting(E_ALL | E_STRICT);
+ini_set('display_errors', TRUE);
+set_time_limit(600);
+
 require_once 'porter.php';
 require_once 'tfidf.php';
 
