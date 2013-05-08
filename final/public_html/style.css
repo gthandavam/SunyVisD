@@ -1,6 +1,9 @@
 * {
 	margin: 0;
 	padding: 0;
+	font-size: 100%;
+	font-family: Georgia, "Droid Serif", "Times New Roman", Times, serif;
+	line-height: 1.25;
 }
 
 html, body {
@@ -8,8 +11,8 @@ html, body {
 }
 
 body {
-	font: 20px/1.25 Georgia, "Times New Roman", Times, serif;
 	background: #F0F0F0;
+	font-size: 20px;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -54,8 +57,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 #content input {
-	font: 20px/1.25 Georgia, "Times New Roman", Times, serif;
 	padding: 4px;
+}
+
+#content select {
+	padding: 1px;
 }
 
 #content #action {
@@ -66,8 +72,12 @@ h1, h2, h3, h4, h5, h6 {
 	color: #FF0000;
 }
 
-#content .success, #content .success a:link {
-	color: #208020;
+#content .success, #content .success a:link, #content .success a:visited {
+	color: #106010;
+}
+
+#content .success em {
+	font-size: 80%;
 }
 
 #footer {
@@ -75,6 +85,6 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 #footer p {
-	font-size: 16px;
+	font-size: 80%;
 	padding: 0.625em 0;
 }
