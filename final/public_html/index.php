@@ -55,7 +55,7 @@ if (array_key_exists('action', $_POST) && $_POST['action'] == 'Submit') {
 <ol>
 <?php foreach ($top10 as $pair): ?>
 <?php list($concept, $tfidf) = $pair; ?>
-<li class="success"><strong><?=htmlentities($concept) ?></strong> <em>(TF-IDF score = <?=$tfidf ?>)</em></li>
+<li class="success"><strong><a href="https://en.wikipedia.org/wiki/<?=htmlentities($concept) ?>"><?=htmlentities($concept) ?></a></strong> <em>(TF-IDF score = <?=$tfidf ?>)</em></li>
 <?php endforeach; ?>
 </ol>
 <?php elseif (!is_null($similarity)): ?>
