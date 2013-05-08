@@ -3,6 +3,10 @@
 	padding: 0;
 }
 
+html, body {
+	height: 100%;
+}
+
 body {
 	font: 20px/1.25 Georgia, "Times New Roman", Times, serif;
 	background: #F0F0F0;
@@ -24,16 +28,21 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 #header {
-	padding: 0.66667em 0;
+	height: 4em;
 }
 
 #header h1 {
 	font-size: 200%;
+	line-height: 2em;
+	white-space: nowrap;
+	overflow: hidden;
 }
 
 #content {
 	background: #F0F0F0;
 	color: #000000;
+	min-height: calc(100% - 4em - 3em - 2em);
+	padding: 1em;
 }
 
 #content p {
@@ -50,6 +59,10 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 #footer {
+	height: 3em;
+}
+
+#footer p {
 	font-size: 16px;
-	padding: 0.66667em 0;
+	padding: 0.625em 0;
 }
