@@ -1,18 +1,15 @@
-'''
-Created on May 7, 2013
-
-@author: ganesathandavamponnuraj
-'''
-import sqlite3
-from nltk.corpus import wordnet as wn
-from nltk.corpus import stopwords as sw
-import nltk
 import math
 import re
-from time import time
+import sqlite3
 from nltk import PorterStemmer
+from nltk.corpus import wordnet as wn
+from nltk.corpus import stopwords as sw
+from time import time
 
-conn = sqlite3.connect('/Users/ganesathandavamponnuraj/GradSchool/Spring13/CompLing/FinalProject/Large-Data/MySql-inv_idx/tfidf-d80-t2.5-indexed.db')
+DB_PATH = 'E:/Desktop/wikiprep/tfidf-d80-t2.5-indexed-tfidf-desc.db'
+CONCEPT_LIMIT = 10
+
+conn = sqlite3.connect(DB_PATH)
 sql = conn.cursor()
 punc_rx = re.compile(r'[^A-Za-z0-9]+', re.DOTALL)
 no_of_docs = 1857524
@@ -38,8 +35,9 @@ def cosine_similarity(v1, v2):
 
 def get_word_tfidf(word):
     ret = {}
-    for row in sql.execute("SELECT word, concept_id, tfidf from inverted_index\
-         ii join words w on ii.word_id = w.id WHERE w.word = '"+word+"'  LIMIT 1000;"):
+    for row in sql.execute("SELECT word, concept_id, tfidf from inverted_index "+
+         "ii join words w on ii.word_id = w.id WHERE w.word = '"+word+"'  LIMIT "+
+         str(CONCEPT_LIMIT)+";"):
         ret[row[1]] =  row[2]
     return ret
 
