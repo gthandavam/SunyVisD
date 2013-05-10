@@ -5,7 +5,9 @@ from nltk.corpus import wordnet as wn
 from nltk.tokenize import word_tokenize, wordpunct_tokenize, sent_tokenize
 import xml.etree.ElementTree as etree
 from document_relatedness import *
-path_string='./small_EnglishAW.test.xml'  
+ 
+path_string='./small_EnglishAW.test.xml'	
+ 
 
 #root=getroot('/home/user/Downloads/task17-test+keys/test/English/EnglishAW.test.xml')
 #root.xpath('/corpus/text/*/text()')
@@ -92,14 +94,14 @@ def split_syn_dots(word):
     return l 
 
 def lesk_ESA_similarity(filename):
- 	
-	print "Lesk ESA"
-	f = open(filename,'w')
-	tree = etree.parse(path_string)
-	dictionary = get_wsd_input_data(tree);
-	print "Computing Lesk  Similarity  \n"
-	for key in sorted(dictionary.iterkeys()):
-   		word=wn.morphy(dictionary[key].lower())
+  document_similarity=Document_Relatedness()
+  print "Lesk ESA"
+  f = open(filename,'w')
+  tree = etree.parse(path_string)
+  dictionary = get_wsd_input_data(tree);
+  print "Computing Lesk  Similarity  \n"
+  for key in sorted(dictionary.iterkeys()):
+  	word=wn.morphy(dictionary[key].lower())
 	sentence=get_sentence(tree,key)
   	context_original=set([]) 
 
@@ -113,7 +115,7 @@ def lesk_ESA_similarity(filename):
          
   
   	best_sense=wn.lemmas(word)[0].synset  #best sense    #most frequent sense is a default one
- 	max_overlap=1000000
+ 	max_overlap=0
   	for lemma in wn.lemmas(word):
     		context_int=set([])
     		for example in lemma.synset.examples:        
@@ -121,25 +123,25 @@ def lesk_ESA_similarity(filename):
             			context_int.add(w)
     		for w in get_context_words(lemma.synset.definition):   
         		context_int.add(w)
-    		overlap=ESA_sentence_similarity(context_original,context_int)
-    		if overlap<max_overlap: 
+    		overlap=document_similarity.ESA_sentence_similarity(context_original,context_int)
+    		if overlap>max_overlap: 
         		max_overlap=overlap
         		best_sense=lemma.synset
   	l=split_syn_dots(key)
    
   	answer_line=l[0]+" "+key+" eng-30-"+str(best_sense.offset)+"-"+best_sense.pos+"\n"
   	f.write(answer_line)
-	print "Finished"
+  print "Finished"
 
 def lesk_baseline(filename):
  	
-	print "Lesk Baseline"
-	f = open(filename,'w')
-	tree = etree.parse(path_string)
-	dictionary = get_wsd_input_data(tree);
-	print "Computing Lesk  Similarity  \n"
-	for key in sorted(dictionary.iterkeys()):
-   		word=wn.morphy(dictionary[key].lower())
+   print "Lesk Baseline"
+   f = open(filename,'w')
+   tree = etree.parse(path_string)
+   dictionary = get_wsd_input_data(tree);
+   print "Computing Lesk  Similarity  \n"
+   for key in sorted(dictionary.iterkeys()):
+    	word=wn.morphy(dictionary[key].lower())
 	sentence=get_sentence(tree,key)
   	context_original=set([]) 
 
@@ -169,6 +171,9 @@ def lesk_baseline(filename):
    
   	answer_line=l[0]+" "+key+" eng-30-"+str(best_sense.offset)+"-"+best_sense.pos+"\n"
   	f.write(answer_line)
-	print "Finished"
+   print "Finished"
 
-lesk()
+lesk_baseline('baseline_output')
+lesk_ESA_similarity('ESA_output')
+
+

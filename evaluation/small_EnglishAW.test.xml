@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE corpus SYSTEM  "all-words.dtd">
+<corpus lang="en">
+
+
+<text id="en1">
+<s>
+What
+<head id="en1.s001.t3">are</head>
+the
+five
+<head id="en1.s001.t6">lessons</head>
+<head id="en1.s001.t7">learnt</head>
+from
+the
+<head id="en1.s001.t10">evaluation</head>
+and
+what
+do
+these
+<head id="en1.s001.t15">mean</head>
+for
+the
+<head id="en1.s001.t18">nature</head>
+<head id="en1.s001.t19">conservation</head>
+<head id="en1.s001.t20">policy</head>
+?
+</s>
+<s>
+These
+<head id="en3.s103.t1562">are</head>
+not
+necessarily
+indicative
+of
+general
+<head id="en3.s103.t1568">species</head>
+<head id="en3.s103.t1569">trends</head>
+in
+each
+<head id="en3.s103.t1572">region</head>
+,
+but
+illustrative
+of
+the
+kinds
+of
+data
+<head id="en3.s103.t1580">used</head>
+in
+the
+Living
+<head id="en3.s103.t1584">Planet</head>
+<head id="en3.s103.t1585">Index</head>
+.
+</s>
+<s>
+The
+<head id="en1.s014.t284">government</head>
+<head id="en1.s014.t285">provides</head>
+the
+<head id="en1.s014.t287">farmer</head>
+with
+a
+subsidy
+for
+this
+<head id="en1.s014.t293">management</head>
+<head id="en1.s014.t294">function</head>
+.
+</s>
+<s>
+There
+<head id="en2.s054.t1029">are</head>
+also
+large
+rural
+<head id="en2.s054.t1033">regions</head>
+,
+whose
+<head id="en2.s054.t1035">populations</head>
+are
+currently
+<head id="en2.s054.t1038">experiencing</head>
+high
+population
+growth
+,
+while
+the
+urban
+<head id="en2.s054.t1044">areas</head>
+are
+<head id="en2.s054.t1046">showing</head>
+a
+small
+<head id="en2.s054.t1049">decline</head>
+.
+</s>
+</text>
+</corpus>
