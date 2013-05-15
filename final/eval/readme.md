@@ -1,6 +1,6 @@
-Using R to compute SVD
+#Using R to compute SVD
 
-Interfacing with sqlite db
+##Interfacing with sqlite db
 
 	>>install.packages("sqldf")
 	
@@ -24,3 +24,13 @@ Interfacing with sqlite db
 	>> res <- dbSendQuery(con, "SELECT * FROM inverted_index LIMIT 10")
 	>> data1 <- fetch(res)
 	>> data1
+##Memory requirement
+	* R uses binary 64 for storing doubles. (8 bytes per double)
+	* We have 224970230 entries in tfidf-d80-t2.5-indexed-tfidf-desc.db file
+	* This means 1.8GB (roughly) required for representing the inverted_index sparse
+	  matrix in memory.
+         
+##SVD
+	References
+	* Indexing by Latent Semantic Analysis by Deerwester et al..,
+	* Singular Value Decomposition Tutorial by Kirk Baker
