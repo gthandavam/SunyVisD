@@ -22,8 +22,7 @@
 	>> drv <- dbDriver("SQLite")
 	>> con <- dbConnect(drv, dbname = "tfidf-d80-t2.5-indexed-tfidf-desc.db")
 	>> res <- dbSendQuery(con, "SELECT * FROM inverted_index LIMIT 10")
-	/* Problem with fetch is it is returning only 500 rows!!!*/
-	>> data1 <- fetch(res)
+	>> data1 <- fetch(res, n=-1)
 	>> data1
 	>> library(Matrix)
 	>> Y <- sparseMatrix(data1[,1], data1[,2], x=data1[,3], index1=FALSE)
